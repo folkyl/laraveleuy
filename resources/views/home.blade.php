@@ -17,14 +17,12 @@
     <h2>Halo, {{ session('admin_username') }}</h2>
     <a href="{{ route('logout') }}">Logout</a>
 
-    {{-- Jika role guru --}}
     @if (session('admin_role') === 'guru' && isset($guru))
     <h3>Data Guru</h3>
     <p><b>Nama:</b> {{ $guru->nama }}</p>
     <p><b>Mata Pelajaran:</b> {{ $guru->mapel }}</p>
     @endif
 
-    {{-- Jika role siswa --}}
     @if (session('admin_role') === 'siswa' && isset($siswa))
     <h3>Data Siswa</h3>
     <p><b>Nama:</b> {{ $siswa->nama }}</p>
@@ -53,7 +51,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($siswa as $i => $s)
+            @foreach($listSiswa as $i => $s)
             <tr>
                 <td>{{ $i + 1 }}</td>
                 <td>{{ $s->nama }}</td>

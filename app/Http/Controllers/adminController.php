@@ -45,45 +45,45 @@ class adminController extends Controller
     }
 
     public function prosesRegister(Request $request)
-{
-    try {
-        $request->validate([
-            'username' => 'required|string|max:50|unique:dataadmin,username',
-            'password' => 'required|string|min:8',
-            'role'     => 'required|string|in:admin,guru,siswa',
-        ]);
-
-        // simpan ke dataadmin
-        $admin = admin::create([
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'role'     => $request->role,
-        ]);
-
-        // insert detail kalau guru
-        if ($request->role === 'guru') {
-            \App\Models\guru::create([
-                'id'    => $admin->id,
-                'nama'  => $request->nama,
-                'mapel' => $request->mapel,
+    {
+        try {
+            $request->validate([
+                'username' => 'required|string|max:50|unique:dataadmin,username',
+                'password' => 'required|string|min:8',
+                'role'     => 'required|string|in:admin,guru,siswa',
             ]);
-        }
 
-        // insert detail kalau siswa
-        if ($request->role === 'siswa') {
-            \App\Models\siswa::create([
-                'id'   => $admin->id,
-                'nama' => $request->nama,
-                'tb'   => $request->tb,
-                'bb'   => $request->bb,
+            // simpan ke dataadmin
+            $admin = admin::create([
+                'username' => $request->username,
+                'password' => Hash::make($request->password),
+                'role'     => $request->role,
             ]);
-        }
 
-        return redirect()->back()->with('success', 'Registrasi berhasil!');
-    } catch (Exception $e) {
-        return redirect()->back()->with('error', 'Registrasi gagal: ' . $e->getMessage());
+            // insert detail kalau guru
+            if ($request->role === 'guru') {
+                \App\Models\guru::create([
+                    'id'    => $admin->id,
+                    'nama'  => $request->nama,
+                    'mapel' => $request->mapel,
+                ]);
+            }
+
+            // insert detail kalau siswa
+            if ($request->role === 'siswa') {
+                \App\Models\siswa::create([
+                    'id'   => $admin->id,
+                    'nama' => $request->nama,
+                    'tb'   => $request->tb,
+                    'bb'   => $request->bb,
+                ]);
+            }
+
+            return redirect()->back()->with('success', 'Registrasi berhasil!');
+        } catch (Exception $e) {
+            return redirect()->back()->with('error', 'Registrasi gagal: ' . $e->getMessage());
+        }
     }
-}
 
 
     public function home()
@@ -100,6 +100,9 @@ class adminController extends Controller
             $siswa = siswa::where('id', $adminId)->first();
         }
 
-        return view('home', compact('guru', 'siswa'));
+        // Cek jika ingin menampilkan daftar semua siswa:
+        $listSiswa = siswa::all(); // atau Siswa::all()
+
+        return view('home', compact('guru', 'siswa', 'listSiswa'));
     }
 }

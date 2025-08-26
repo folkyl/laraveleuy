@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('datakonten', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('judul');
-            $table->string('isi');
-            $table->string('detil');
+            $table->text('judul');
+            $table->text('isi');
+            $table->text('detil');
         });
     }
 
