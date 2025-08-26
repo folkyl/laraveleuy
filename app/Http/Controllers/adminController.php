@@ -6,14 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\admin;
 use Illuminate\Support\Facades\Hash;
 use Exception;
+use App\Models\siswa;
+use App\Models\guru;
 
 
 class adminController extends Controller
 {
-    public function landing()
-    {
-        return view('landing');
-    }
 
     public function formLogin()
 
@@ -47,21 +45,61 @@ class adminController extends Controller
     }
 
     public function prosesRegister(Request $request)
-    {
-        try {
-            $request->validate([
-                'username' => 'required|string|max:50|unique:dataadmin,username',
-                'password' => 'required|string|min:8',
-                'role' => 'required|string|in:admin,guru,siswa',
+{
+    try {
+        $request->validate([
+            'username' => 'required|string|max:50|unique:dataadmin,username',
+            'password' => 'required|string|min:8',
+            'role'     => 'required|string|in:admin,guru,siswa',
+        ]);
+
+        // simpan ke dataadmin
+        $admin = admin::create([
+            'username' => $request->username,
+            'password' => Hash::make($request->password),
+            'role'     => $request->role,
+        ]);
+
+        // insert detail kalau guru
+        if ($request->role === 'guru') {
+            \App\Models\guru::create([
+                'id'    => $admin->id,
+                'nama'  => $request->nama,
+                'mapel' => $request->mapel,
             ]);
-            admin::create([
-                'username' => $request->username,
-                'password' => Hash::make($request->password),
-                'role' => $request->role,
-            ]);
-            return redirect()->back()->with('success', 'Registrasi berhasil!');
-        } catch (Exception $e) {
-            return redirect()->back()->with('error', 'Registrasi gagal: ' . $e->getMessage());
         }
+
+        // insert detail kalau siswa
+        if ($request->role === 'siswa') {
+            \App\Models\siswa::create([
+                'id'   => $admin->id,
+                'nama' => $request->nama,
+                'tb'   => $request->tb,
+                'bb'   => $request->bb,
+            ]);
+        }
+
+        return redirect()->back()->with('success', 'Registrasi berhasil!');
+    } catch (Exception $e) {
+        return redirect()->back()->with('error', 'Registrasi gagal: ' . $e->getMessage());
+    }
+}
+
+
+    public function home()
+    {
+        $adminId = session('admin_id');
+        $adminRole = session('admin_role');
+
+        $guru = null;
+        $siswa = null;
+
+        if ($adminRole === 'guru') {
+            $guru = guru::where('id', $adminId)->first();
+        } elseif ($adminRole === 'siswa') {
+            $siswa = siswa::where('id', $adminId)->first();
+        }
+
+        return view('home', compact('guru', 'siswa'));
     }
 }

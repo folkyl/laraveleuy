@@ -4,40 +4,48 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
-use App\Models\admin;
+use App\Models\Admin;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\admin>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Admin>
  */
-class adminFactory extends Factory
+class AdminFactory extends Factory
 {
+    protected $model = Admin::class;
+
     /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
+     * Default state untuk membuat user role siswa
      */
     public function definition(): array
     {
         return [
-            'username' => 'admin',
-            'password' => Hash::make('admin')
+            'username' => $this->faker->unique()->userName(),
+            'password' => Hash::make('123'), // password default biar gampang login
+            'role'     => 'siswa',          // default role
         ];
     }
 
+    /**
+     * State khusus admin
+     */
     public function dataadmin1()
     {
         return $this->state([
             'username' => 'admin',
             'password' => Hash::make('admin'),
-            'role' => 'admin',
+            'role'     => 'admin',
         ]);
     }
+
+    /**
+     * State khusus guru
+     */
     public function dataadmin2()
     {
         return $this->state([
             'username' => 'guru',
             'password' => Hash::make('guru'),
-            'role' => 'guru',
+            'role'     => 'guru',
         ]);
     }
 }

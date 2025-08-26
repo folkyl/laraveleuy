@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('dataadmin', function (Blueprint $table) {
-            $table->id('id');
+        Schema::create('datakonten', function (Blueprint $table) {
+            $table->id();
             $table->timestamps();
-            $table->string('username')->unique();
-            $table->string('password');
-            $table->string('role')->default('admin');
+            $table->string('judul');
+            $table->string('isi');
+            $table->string('detil');
         });
     }
 
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('dataadmin');
+        Schema::dropIfExists('datakonten');
     }
 };

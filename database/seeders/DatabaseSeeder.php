@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use App\Models\admin;
 use App\Models\siswa;
+use App\Models\konten;
+use App\Models\guru;
 
 class DatabaseSeeder extends Seeder
 {
@@ -25,5 +27,8 @@ class DatabaseSeeder extends Seeder
         admin::factory()->dataadmin1()->create();
         admin::factory()->dataadmin2()->create();
         siswa::factory()->count(5)->create();
+        konten::factory()->count(5)->create();
+        siswa::factory()->count(15)->create();
+        guru::factory()->count(5)->create();
     }
 }

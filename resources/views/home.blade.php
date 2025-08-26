@@ -6,15 +6,42 @@
 </head>
 
 <body>
-    @if (session('admin_role') === 'admin')
+    {{-- Tampilkan pesan sukses/error --}}
+    @if(session('success'))
+    <p style="color: green;">{{ session('success') }}</p>
     @endif
-    <h2>Halo, Admin</h2>
-    <a href="{{ route('logout') }}">Logout</a>
-    <h2>Daftar Siswa</h2>
-    <a href="{{ route('siswa.create') }}">
+    @if(session('error'))
+    <p style="color: red;">{{ session('error') }}</p>
+    @endif
 
+    <h2>Halo, {{ session('admin_username') }}</h2>
+    <a href="{{ route('logout') }}">Logout</a>
+
+    {{-- Jika role guru --}}
+    @if (session('admin_role') === 'guru' && isset($guru))
+    <h3>Data Guru</h3>
+    <p><b>Nama:</b> {{ $guru->nama }}</p>
+    <p><b>Mata Pelajaran:</b> {{ $guru->mapel }}</p>
+    @endif
+
+    {{-- Jika role siswa --}}
+    @if (session('admin_role') === 'siswa' && isset($siswa))
+    <h3>Data Siswa</h3>
+    <p><b>Nama:</b> {{ $siswa->nama }}</p>
+    <p><b>Tinggi Badan:</b> {{ $siswa->tb }}</p>
+    <p><b>Berat Badan:</b> {{ $siswa->bb }}</p>
+    @endif
+
+
+    <h2>Daftar Siswa</h2>
+
+    {{-- Tombol tambah siswa hanya untuk admin --}}
+    @if (session('admin_role') === 'admin')
+    <a href="{{ route('siswa.create') }}">
         <button>+ Tambah Siswa</button>
     </a>
+    @endif
+
     <table border="1" cellpadding="8">
         <thead>
             <tr>
@@ -33,8 +60,21 @@
                 <td>{{ $s->tb }}</td>
                 <td>{{ $s->bb }}</td>
                 <td>
-                    <a href="{{ route('siswa.edit', $s->id) }}">Edit</a> |
-                    <a href="{{ route('siswa.delete', $s->id) }}" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
+                    @if (session('admin_role') === 'admin')
+                    <a href="{{ route('siswa.edit', $s->id) }}">
+                        <button type="button">Edit</button>
+                    </a>
+                    <form action="{{ route('siswa.destroy', $s->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" onclick="return confirm('Yakin ingin menghapus data {{ $s->nama }}?')">
+                            Hapus
+                        </button>
+                    </form>
+
+                    @else
+                    <span>(Tidak ada aksi)</span>
+                    @endif
                 </td>
             </tr>
             @endforeach
