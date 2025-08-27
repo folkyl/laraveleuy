@@ -26,17 +26,14 @@ class adminController extends Controller
 
         if ($admin && Hash::check($request->password, $admin->password)) {
             // simpan ke session
-            session(['admin_id' => $admin->id, 'admin_username' => $admin->username, 'admin_role' => $admin->role]);
+            session([
+                'admin_id' => $admin->id,
+                'admin_username' => $admin->username,
+                'admin_role' => $admin->role
+            ]);
             return redirect()->route('home');
         }
         return back()->with('error', 'Username atau password salah.');
-    }
-
-    public function logout()
-    {
-        //hapus session
-        session()->forget(['admin_id', 'admin_username']);
-        return redirect()->route('landing');
     }
 
     public function formRegister()
@@ -60,22 +57,32 @@ class adminController extends Controller
                 'role'     => $request->role,
             ]);
 
-            // insert detail kalau guru
-            if ($request->role === 'guru') {
-                \App\Models\guru::create([
+             // Kalau role guru → simpan juga ke tabel dataguru
+             if ($request->role === 'guru') {
+                $request->validate([
+                    'nama_guru'  => 'required|string|max:100',
+                    'mapel_guru' => 'required|string|max:100',
+                ]);
+            
+                Guru::create([
                     'id'    => $admin->id,
-                    'nama'  => $request->nama,
-                    'mapel' => $request->mapel,
+                    'nama'  => $request->nama_guru,
+                    'mapel' => $request->mapel_guru,
                 ]);
             }
-
-            // insert detail kalau siswa
+            
             if ($request->role === 'siswa') {
-                \App\Models\siswa::create([
+                $request->validate([
+                    'nama_siswa' => 'required|string|max:100',
+                    'tb_siswa'   => 'required|numeric',
+                    'bb_siswa'   => 'required|numeric',
+                ]);
+            
+                Siswa::create([
                     'id'   => $admin->id,
-                    'nama' => $request->nama,
-                    'tb'   => $request->tb,
-                    'bb'   => $request->bb,
+                    'nama' => $request->nama_siswa,
+                    'tb'   => $request->tb_siswa,
+                    'bb'   => $request->bb_siswa,
                 ]);
             }
 
@@ -84,25 +91,10 @@ class adminController extends Controller
             return redirect()->back()->with('error', 'Registrasi gagal: ' . $e->getMessage());
         }
     }
-
-
-    public function home()
+    public function logout()
     {
-        $adminId = session('admin_id');
-        $adminRole = session('admin_role');
-
-        $guru = null;
-        $siswa = null;
-
-        if ($adminRole === 'guru') {
-            $guru = guru::where('id', $adminId)->first();
-        } elseif ($adminRole === 'siswa') {
-            $siswa = siswa::where('id', $adminId)->first();
-        }
-
-        // Cek jika ingin menampilkan daftar semua siswa:
-        $listSiswa = siswa::all(); // atau Siswa::all()
-
-        return view('home', compact('guru', 'siswa', 'listSiswa'));
+        //hapus session
+        session()->forget(['admin_id', 'admin_username']);
+        return redirect()->route('landing');
     }
 }

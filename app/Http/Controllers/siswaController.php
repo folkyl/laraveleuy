@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Siswa; // pastikan ini sesuai nama model
+use App\Models\siswa; // pastikan ini sesuai nama model
+use App\Models\guru;
 
 class SiswaController extends Controller
 {
@@ -12,10 +13,27 @@ class SiswaController extends Controller
         if (!session()->has('admin_id')) {
             return redirect()->route('login');
         }
-
-        $siswa = Siswa::all(); // gunakan nama kelas, bukan string
-        return view('home', compact('siswa'));
-    }
+    
+        // Daftar semua siswa (untuk tabel)
+        $listSiswa = siswa::all();
+    
+        // Daftar semua guru (misalnya untuk admin yang lihat data guru)
+        $listGuru = guru::all();
+    
+        // Profil sesuai role login
+        $profilSiswa = null;
+        $profilGuru = null;
+    
+        if (session('admin_role') === 'siswa') {
+            $profilSiswa = siswa::where('id', session('admin_id'))->first();
+        }
+    
+        if (session('admin_role') === 'guru') {
+            $profilGuru = guru::where('id', session('admin_id'))->first();
+        }
+    
+        return view('home', compact('listSiswa', 'listGuru', 'profilSiswa', 'profilGuru'));
+    } 
 
     public function create()
     {

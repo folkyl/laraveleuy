@@ -26,9 +26,8 @@ class DatabaseSeeder extends Seeder
 
         admin::factory()->dataadmin1()->create();
         admin::factory()->dataadmin2()->create();
-        siswa::factory()->count(5)->create();
         konten::factory()->count(5)->create();
         siswa::factory()->count(15)->create();
-        guru::factory()->count(5)->create();
+        guru::factory()->count(15)->create();
     }
 }

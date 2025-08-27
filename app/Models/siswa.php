@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class siswa extends Model
 {
     use HasFactory;
+    public function admin()
+    {
+        return $this->belongsTo(admin::class, 'id','id');
+    }
     protected $table = 'datasiswa';
     protected $fillable = [
         'id',
@@ -16,26 +20,4 @@ class siswa extends Model
         'bb'
     ];
     protected $primaryKey = 'idsiswa';
-
-    public function admin()
-    {
-        return $this->belongsTo(admin::class, 'id');
-    }
-
-    public function home()
-    {
-        $adminId = session('admin_id');
-        $adminRole = session('admin_role');
-
-        $guru = null;
-        $siswa = null;
-
-        if ($adminRole === 'guru') {
-            $guru = guru::where('id', $adminId)->first();
-        } elseif ($adminRole === 'siswa') {
-            $siswa = siswa::where('id', $adminId)->first();
-        }
-
-        return view('home', compact('guru', 'siswa'));
-    }
 }

@@ -12,16 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dataguru', function (Blueprint $table) {
-            $table->id();
+            $table->id('idguru');
             $table->string('nama');
             $table->string('mapel');
-
-            $table->unsignedBigInteger('admin_id');
-            $table->foreign('admin_id')
-                ->references('id')
-                ->on('dataadmin')
-                ->onDelete('cascade');
-
+            $table->unsignedBigInteger('id');
+            $table->foreign('id')->references('id')->on('dataadmin')->onDelete('cascade');
             $table->timestamps();
         });
     }

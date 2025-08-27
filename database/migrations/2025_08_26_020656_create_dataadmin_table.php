@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('dataadmin', function (Blueprint $table) {
             $table->id('id');
-            $table->timestamps();
             $table->string('username')->unique();
             $table->string('password');
+            $table->timestamps();
             $table->string('role')->default('admin');
         });
     }

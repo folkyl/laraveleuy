@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('datasiswa', function (Blueprint $table) {
             $table->id('idsiswa');
-            $table->timestamps();
             $table->string('nama');
             $table->integer('tb');
             $table->float('bb');
             $table->unsignedBigInteger('id');
+            $table->timestamps();
             $table->foreign('id')->references('id')->on('dataadmin')->onDelete('cascade');
         });
     }

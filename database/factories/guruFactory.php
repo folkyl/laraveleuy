@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 use App\Models\admin;
-
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -26,7 +25,6 @@ class guruFactory extends Factory
                 'Bahasa Indonesia',
                 'Informatika'
             ]),
-            'admin_id' => admin::factory(),
         ];
     }
 }

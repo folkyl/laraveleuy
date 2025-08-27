@@ -3,7 +3,8 @@
 <head>
     <title>Register</title>
     <script>
-        function showChoice(role) {
+        function showChoice() {
+            const role = document.querySelector('input[name="role"]:checked')?.value;
             document.getElementById('guruFields').style.display = (role === 'guru') ? 'block' : 'none';
             document.getElementById('siswaFields').style.display = (role === 'siswa') ? 'block' : 'none';
         }
@@ -12,37 +13,84 @@
 <body>
     <h2>Register</h2>
 
-    @if($errors->any())
-        <ul style="color:red">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+    @if (session('success'))
+        <p style="color: green;">{{ session('success') }}</p>
+    @endif
+
+    @if (session('error'))
+        <p style="color: red;">{{ session('error') }}</p>
     @endif
 
     <form method="POST" action="{{ route('register.post') }}">
         @csrf
+        <p>Username:</p>
         <input type="text" name="username" placeholder="Username" required><br>
+        <p>Password:</p>
         <input type="password" name="password" placeholder="Password" required><br>
 
-        <label><input type="radio" name="role" value="admin" oninput="showChoice(this.value)" required> Admin</label>
-        <label><input type="radio" name="role" value="guru" oninput="showChoice(this.value)"> Guru</label>
-        <label><input type="radio" name="role" value="siswa" oninput="showChoice(this.value)"> Siswa</label>
+        <label><input type="radio" name="role" value="admin" onclick="showChoice()" checked> Admin</label>
+        <label><input type="radio" name="role" value="guru" onclick="showChoice()"> Guru</label>
+        <label><input type="radio" name="role" value="siswa" onclick="showChoice()"> Siswa</label>
 
-        {{-- Tambahan field untuk guru --}}
-        <div id="guruFields" style="display:none; margin-top:10px;">
-            <input type="text" name="nama" placeholder="Nama Guru"><br>
-            <input type="text" name="mapel" placeholder="Mata Pelajaran"><br>
+        {{-- Field tambahan untuk Guru --}}
+        <div id="guruFields" style="display:none;">
+            <p>Nama Guru:</p>
+            <input type="text" name="nama_guru" placeholder="Nama Guru"><br><br>
+
+            <p>Mata Pelajaran:</p>
+            <input type="text" name="mapel_guru" placeholder="Mata Pelajaran"><br><br>
         </div>
 
-        {{-- Tambahan field untuk siswa --}}
-        <div id="siswaFields" style="display:none; margin-top:10px;">
-            <input type="text" name="nama" placeholder="Nama Siswa"><br>
-            <input type="number" name="tb" placeholder="Tinggi Badan"><br>
-            <input type="number" name="bb" placeholder="Berat Badan"><br>
-        </div>
+        {{-- Field tambahan untuk Siswa --}}
+        <div id="siswaFields" style="display:none;">
+            <p>Nama Siswa:</p>
+            <input type="text" name="nama_siswa" placeholder="Nama Siswa"><br><br>
 
+            <p>Tinggi Badan:</p>
+            <input type="number" name="tb_siswa" placeholder="Tinggi Badan"><br><br>
+
+            <p>Berat Badan:</p>
+            <input type="number" name="bb_siswa" placeholder="Berat Badan"><br><br>
+        </div>
+        <br>
+        <span>hmmph ¯\_( ͡° ͜ʖ ͡°)_/¯</span>
+        <br>
         <button type="submit">Register</button>
     </form>
+
+    <p hidden>
+    ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⡤⣦⣤⡴⣲⣖⠶⡴⣤⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⣴⢻⣻⣝⡮⢷⣳⢮⣗⢯⣞⣻⣽⣶⣛⢿⣲⢦⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣤⢶⢯⣳⡭⣟⡶⣝⡾⣻⢼⡳⣞⢯⡞⣵⣻⠾⣭⢷⣟⣮⢗⣻⢦⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⡾⣯⢞⡽⣞⢷⣻⡝⣞⣧⢿⣱⢯⣳⢯⣳⢯⣳⡭⣟⣭⢿⣻⢿⣭⣛⣮⢟⣦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡤⠔⢚⣭⡺⣝⣳⡽⢾⣽⢻⣄⢷⣏⡿⣽⢾⣹⡞⣵⡻⣼⡳⢧⣟⢮⣳⢯⡽⣻⣖⣻⡼⣫⣞⣵⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⠖⠋⠀⢠⣴⢻⣖⣻⣭⢷⣻⣟⢮⣟⣼⠜⢤⣿⢯⣳⢧⣟⣳⢿⣱⣿⣻⢼⣫⢗⡯⡾⣽⡞⣵⣏⢷⡞⣵⣳⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠊⠀⠀⢀⣼⢻⡼⣳⡽⣶⣻⢿⣟⢮⣻⠎⠁⠀⢸⡟⣮⢗⡯⣞⠿⣏⡷⣻⣯⡗⣯⢾⣹⡽⣞⣿⢳⡞⣯⢞⣳⡽⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⠀⠀⢀⡼⣇⣿⢣⣟⣿⣟⣻⣿⣜⡿⠃⠀⠀⠀⣿⢻⣇⡿⣻⣼⠃⣟⣧⢟⣧⢿⣣⢟⣧⢻⣿⢟⣧⠿⣜⡿⣣⠿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣼⣻⡼⣣⣿⣛⢾⣼⣿⡷⡞⠀⠀⠀⠀⠀⣾⣏⡾⣵⣛⡎⠀⠹⣞⢯⣻⢾⣱⡟⣮⢟⡼⣿⣺⡝⣯⢞⡽⣛⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠁⢳⣽⣛⣶⣿⣿⣿⣿⡟⠀⠀⣠⣤⡀⠈⡏⣽⡞⣵⣻⠀⠀⠀⠸⣯⡽⣟⡶⣫⢷⣫⢟⣿⣱⢯⣳⢏⡿⣹⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⢀⠀⠀⠀⠀⠀⠀⢠⡞⣧⣿⣿⣿⣿⣿⣿⡇⢠⡞⢠⣖⢓⠉⠀⠘⡽⣧⢿⠀⠠⠀⠀⢸⣳⣯⢗⣯⣳⣯⠾⣽⣫⣞⡷⢯⣝⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⢀⢀⡁⡆⠀⠀⠀⠀⢀⣾⣿⣿⣿⣿⣿⣿⣿⣿⡇⠘⠂⣿⣿⡟⠀⠀⠀⠙⣞⣏⢠⢚⣛⡻⣆⠳⣯⡟⡶⣽⣷⡻⣽⣳⡾⣽⢫⡾⣯⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⡰⠨⠀⡞⠈⠁⠀⠀⠀⠀⣸⣿⣿⣿⡿⠛⠋⣱⣿⣿⡇⠀⠁⠿⠟⠀⠀⠀⠀⠀⠈⠹⣰⣿⣿⠈⡞⡇⣝⡾⡽⣽⣷⡻⣽⢿⡝⣾⣹⣽⣳⡆⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠄⡄⣤⠙⠀⡆⠀⠀⠀⠀⠉⣼⣿⠟⠁⠀⢰⣿⣿⣿⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⡿⢁⢇⣿⢺⣝⣿⣿⣽⢋⣟⡞⣧⠷⣏⣷⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠨⢁⠂⠀⡀⠁⠀⠀⠀⠀⠀⣻⠏⠀⠀⠀⠀⠻⣿⣿⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠿⠟⠁⢠⣿⡝⣧⣿⣻⠾⠇⢨⣞⡽⣣⣟⡿⢾⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠠⠀⠀⠀⠠⢢⡀⠀⠀⠀⠀⠸⠀⠀⠀⠀⠀⢸⡟⣽⣷⣄⠀⠀⠀⢠⣀⡀⢀⠀⠀⠀⠀⠀⢀⣴⡿⣿⡾⢿⡼⢃⢃⣴⢻⣜⢷⣻⣼⣟⠏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⢀⠀⠀⣡⣿⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⣸⣿⣿⣿⣷⣄⠀⠸⣯⢝⣻⠀⠀⠀⣠⣖⡟⣮⢿⣏⣿⣿⢷⣏⠿⣜⡯⣞⢯⡷⡞⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⢀⡁⢁⣼⣿⣿⣿⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣿⣿⣿⣿⣿⣿⣧⡀⠁⠉⠁⠀⣠⡟⣷⢺⣝⣯⣷⣻⣛⣮⢷⣺⣻⡝⡾⣭⢿⠝⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⢸⣷⣾⣿⣿⣿⣿⣿⠀⠀⠀⠀⠀⠀⠀⢀⣤⣾⣿⣿⣿⣿⣿⣿⣿⠋⢲⠒⢂⣿⢳⣯⡽⠗⣺⢷⣣⢷⣫⣾⣷⣟⣧⠿⠙⠁⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠
+⠐⢿⣿⣿⣿⣿⣿⣿⣿⣦⣤⠀⠀⠀⣠⣴⣿⣿⣿⣿⣿⣿⣿⣿⠿⢡⣤⣂⠒⠟⠚⠉⠀⢀⡰⣯⣳⣿⣿⣿⣿⣿⣾⣿⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⢄⡎⣿⣟
+⠀⠀⠙⣿⣿⣿⣿⣿⣿⣿⣿⣾⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⠛⢠⣴⢧⡙⡟⡀⠀⠀⠂⢈⣤⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⡀⠀⠀⠀⠀⠀⢀⡠⣠⣦⣾⣻⣿⡇⢸⢻
+⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢰⠟⡎⡄⢃⢸⠰⠀⢀⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣆⡀⣠⣴⡵⣿⣷⡿⣿⣿⣽⢿⣧⠸⡏
+⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⢿⣿⠧⢾⣼⠸⠀⢸⠀⣇⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢿⣻⣯⠺⣾⣽⣿⣿⣽⣿⣿⣯⡿⣿⣿⡿⡀⣷
+⠀⠀⠀⠀⠀⠈⢻⣿⣿⣿⣿⣿⣿⣿⣿⡟⠛⠁⠀⡟⢡⣾⣿⠁⡇⡇⡎⢰⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⢫⡏⢲⣯⠉⢨⠀⢸⣿⣿⣽⣿⣿⣽⣿⣿⣽⣿⣿⣷⡟
+⠀⠀⠀⠀⠀⠀⠀⠹⣿⣿⣿⡿⠿⠋⠉⠀⢀⣠⣴⡵⠿⣿⣿⢘⢹⣈⣰⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣻⣯⣷⠟⠙⠀⣼⠋⠀⠇⠀⢰⣿⣿⣷⣻⣿⣷⣿⡷⠿⠛⠉⠁⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠈⠋⠁⠀⠀⠀⠀⡴⣿⠟⢿⣿⣶⡀⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣟⣿⣿⣻⠋⣟⣿⣟⠇⠂⠰⡇⠀⢈⠀⠀⢸⣷⣿⠷⠟⠛⠉⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣾⣶⣾⣝⣼⣿⣿⣿⠆⢹⣿⣯⣽⣿⣿⣯⣿⣾⠉⣿⣿⣿⡀⢸⣿⠏⢀⡇⠀⡁⠀⠈⠆⠀⠈⠣⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⣠⣾⣿⣿⣾⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⣼⣿⣿⣿⣯⢿⣿⣿⣯⡀⠿⣿⣯⣷⣾⣿⣄⡀⠙⠀⠃⠀⠀⠀⠀⠀⡠⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⣾⣿⣿⣿⡿⣟⠻⡛⢿⣿⡟⣉⠙⣿⣿⣿⣿⣿⢻⣿⢸⣿⣿⣿⠸⣿⣻⣿⣿⣿⣿⣯⣷⣿⣿⣿⣧⠀⠀⠀⠀⠀⠀⠀⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⢀⣿⣿⣿⠏⠒⢀⠤⡴⠀⠈⡇⢒⣶⣿⣯⣿⣸⣿⢸⡿⣌⣿⣼⣿⢿⣿⣯⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠄⠀⠀⠀⠀⠀⣺⣿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⢸⣿⣿⢇⣘⠧⣟⠁⢴⡃⠕⢧⠐⡛⣿⡟⣿⣯⣿⣷⣽⣿⣽⣾⣿⣿⣿⣿⣿⣿⣿⣿⡿⠛⢹⣿⣿⣇⠀⠂⠀⠀⠔⣠⣿⠇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⣿⣿⣿⢹⠿⣧⢗⠀⠟⡇⠂⢸⡀⢶⢳⠿⠛⣽⢫⣽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡀⠀⠈⣿⣿⣿⣷⣶⣶⣶⣾⣿⠏
+    </p>
 </body>
 </html>

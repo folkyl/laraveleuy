@@ -6,29 +6,22 @@
 </head>
 
 <body>
-    {{-- Tampilkan pesan sukses/error --}}
-    @if(session('success'))
-    <p style="color: green;">{{ session('success') }}</p>
-    @endif
-    @if(session('error'))
-    <p style="color: red;">{{ session('error') }}</p>
-    @endif
-
     <h2>Halo, {{ session('admin_username') }}</h2>
+    <h3>Role anda : {{ ucfirst(session('admin_role'))  }}</h3>
     <a href="{{ route('logout') }}">Logout</a>
 
-    @if (session('admin_role') === 'guru' && isset($guru))
-    <h3>Data Guru</h3>
-    <p><b>Nama:</b> {{ $guru->nama }}</p>
-    <p><b>Mata Pelajaran:</b> {{ $guru->mapel }}</p>
-    @endif
+        {{-- Profil Guru --}}
+        @if (session('admin_role') === 'guru' && $profilGuru)
+            <h4>Halo! Guru {{ $profilGuru->nama }}</h4>
+            <h4>Mata Pelajaran : {{ $profilGuru->mapel }}</h4>
+        @endif
 
-    @if (session('admin_role') === 'siswa' && isset($siswa))
-    <h3>Data Siswa</h3>
-    <p><b>Nama:</b> {{ $siswa->nama }}</p>
-    <p><b>Tinggi Badan:</b> {{ $siswa->tb }}</p>
-    <p><b>Berat Badan:</b> {{ $siswa->bb }}</p>
-    @endif
+        {{-- Profil Siswa --}}
+        @if (session('admin_role') === 'siswa' && $profilSiswa)
+            <h4>Halo! Siswa {{ $profilSiswa->nama }}</h4>
+            <h4>Tinggi Badan : {{ $profilSiswa->tb }}</h4>
+            <h4>Berat Badan : {{ $profilSiswa->bb }}</h4>
+        @endif
 
 
     <h2>Daftar Siswa</h2>
