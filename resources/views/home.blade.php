@@ -14,6 +14,15 @@
         @if (session('admin_role') === 'guru' && $profilGuru)
             <h4>Halo! Guru {{ $profilGuru->nama }}</h4>
             <h4>Mata Pelajaran : {{ $profilGuru->mapel }}</h4>
+
+            {{-- info walas --}}
+                        @if ($kelasInfo && $walasInfo)
+                <h4>Wali Kelas : {{ $kelasInfo->jenjang }} {{ $kelasInfo->namakelas }}</h4>
+                <h4>Tahun Ajaran : {{ $kelasInfo->tahunajaran }}</h4>
+                <h4>Jumlah Siswa : {{ $walasInfo->count() }} siswa</h4>
+            @else
+                <h4>(Anda bukan wali kelas)</h4>
+            @endif
         @endif
 
         {{-- Profil Siswa --}}
@@ -21,6 +30,11 @@
             <h4>Halo! Siswa {{ $profilSiswa->nama }}</h4>
             <h4>Tinggi Badan : {{ $profilSiswa->tb }}</h4>
             <h4>Berat Badan : {{ $profilSiswa->bb }}</h4>
+            @if ($kelasInfo && $walasInfo)
+                <h4>Kelas : {{ $kelasInfo->walas->jenjang }} {{ $kelasInfo->walas->namakelas }}</h4>
+                <h4>Wali Kelas : {{ $walasInfo->nama }}</h4>
+                <h4>Tahun Ajaran : {{ $kelasInfo->walas->tahunajaran }}</h4>
+            @endif
         @endif
 
 
@@ -44,29 +58,13 @@
             </tr>
         </thead>
         <tbody>
-            @foreach($listSiswa as $i => $s)
+            @foreach($listSiswa as $siswa)
             <tr>
-                <td>{{ $i + 1 }}</td>
-                <td>{{ $s->nama }}</td>
-                <td>{{ $s->tb }}</td>
-                <td>{{ $s->bb }}</td>
-                <td>
-                    @if (session('admin_role') === 'admin')
-                    <a href="{{ route('siswa.edit', $s->id) }}">
-                        <button type="button">Edit</button>
-                    </a>
-                    <form action="{{ route('siswa.destroy', $s->id) }}" method="POST" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" onclick="return confirm('Yakin ingin menghapus data {{ $s->nama }}?')">
-                            Hapus
-                        </button>
-                    </form>
-
-                    @else
-                    <span>(Tidak ada aksi)</span>
-                    @endif
-                </td>
+                <td>{{ $siswa->idsiswa }}</td>
+                <td>{{ $siswa->nama }}</td>
+                <td>{{ $siswa->tb }}</td>
+                <td>{{ $siswa->bb }}</td>
+                <td>{{ $siswa->idadmin }}</td>
             </tr>
             @endforeach
         </tbody>

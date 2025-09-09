@@ -14,4 +14,9 @@ class guru extends Model
     protected $table = 'dataguru';
     protected $primaryKey = 'idguru';
     protected $fillable = ['id', 'nama', 'mapel'];
+
+    public function walas() 
+    {
+        return $this->hasOne(walas::class, 'idguru', 'idguru');
+    }
 }

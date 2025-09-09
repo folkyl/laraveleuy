@@ -53,7 +53,6 @@
             <input type="number" name="bb_siswa" placeholder="Berat Badan"><br><br>
         </div>
         <br>
-        <span>hmmph ¯\_( ͡° ͜ʖ ͡°)_/¯</span>
         <br>
         <button type="submit">Register</button>
     </form>

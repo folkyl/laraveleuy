@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\siswa; // pastikan ini sesuai nama model
 use App\Models\guru;
+use App\Models\kelas;
+use App\Models\walas;
 
 class SiswaController extends Controller
 {
@@ -23,16 +25,41 @@ class SiswaController extends Controller
         // Profil sesuai role login
         $profilSiswa = null;
         $profilGuru = null;
+        $walasInfo = null;
+        $kelasInfo = null;
     
         if (session('admin_role') === 'siswa') {
-            $profilSiswa = siswa::where('id', session('admin_id'))->first();
+            $profilSiswa = siswa::where('idsiswa', session('admin_id'))->first();
+                        // Cari kelas siswa berdasarkan idsiswa
+            if ($profilSiswa) {
+                $kelas = Kelas::with('walas')->where('idsiswa', $profilSiswa->idsiswa)->first();
+                if ($kelas) {
+                    $kelasInfo = $kelas;
+                    // Cari info wali kelas
+                    if ($kelas->walas) {
+                        $walasInfo = guru::where('idguru', $kelas->walas->idguru)->first();
+                    }
+                }
+            }
         }
     
         if (session('admin_role') === 'guru') {
-            $profilGuru = guru::where('id', session('admin_id'))->first();
+            $profilGuru = guru::where('idguru', session('admin_id'))->first();
+
+
+                        // Cari kelas yang diajar guru (jika guru adalah wali kelas)
+            if ($profilGuru) {
+                $walasGuru = Walas::where('idguru', $profilGuru->idguru)->first();
+                if ($walasGuru) {
+                    // Ambil semua siswa di kelas yang diajar guru ini
+                    $siswaDiKelas = Kelas::with('siswa')->where('idwalas', $walasGuru->idwalas)->get();
+                    $kelasInfo = $walasGuru;
+                    $walasInfo = $siswaDiKelas;
+                }
+            }
         }
     
-        return view('home', compact('listSiswa', 'listGuru', 'profilSiswa', 'profilGuru'));
+        return view('home', compact('listSiswa', 'listGuru', 'profilSiswa', 'profilGuru', 'walasInfo', 'kelasInfo'));
     } 
 
     public function create()

@@ -8,16 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class siswa extends Model
 {
     use HasFactory;
-    public function admin()
-    {
-        return $this->belongsTo(admin::class, 'id','id');
-    }
+
     protected $table = 'datasiswa';
+    protected $primaryKey = 'idsiswa';
+
     protected $fillable = [
-        'id',
         'nama',
         'tb',
         'bb'
     ];
-    protected $primaryKey = 'idsiswa';
+
+    public function admin()
+    {
+        return $this->belongsTo(admin::class, 'idadmin', 'idadmin');
+    }
 }
