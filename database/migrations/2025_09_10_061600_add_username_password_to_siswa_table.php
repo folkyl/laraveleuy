@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('datasiswa', function (Blueprint $table) {
-            $table->id(); // ini akan membuat kolom id auto increment
-            $table->string('nama');
-            $table->integer('tb');
-            $table->integer('bb');
-            $table->timestamps();
+        Schema::table('datasiswa', function (Blueprint $table) {
+            $table->string('username')->nullable(); // tambahkan nullable
+            $table->string('password')->nullable();
         });
     }
 
@@ -25,6 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('datasiswa');
+        Schema::table('datasiswa', function (Blueprint $table) {
+            $table->dropColumn('username');
+            $table->dropColumn('password');
+        });
     }
 };

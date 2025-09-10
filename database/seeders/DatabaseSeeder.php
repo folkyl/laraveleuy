@@ -11,6 +11,7 @@ use App\Models\konten;
 use App\Models\guru;
 use App\Models\walas;
 use App\Models\kelas;
+use Illuminate\Support\Facades\DB;
 
 class DatabaseSeeder extends Seeder
 {
@@ -61,10 +62,23 @@ class DatabaseSeeder extends Seeder
                 foreach ($chunks[$index] as $siswa) {
                     Kelas::create([
                         'idwalas' => $idwalas,
-                        'idsiswa' => $siswa->idsiswa
+                        'idsiswa' => $siswa->id // <-- perbaiki di sini
                     ]);
                 }
             }
+        }
+
+        // Seeder siswa dan walas harus dijalankan lebih dulu
+        $siswa = siswa::first();
+        $walas = walas::first();
+
+        if ($siswa && $walas) {
+            DB::table('datakelas')->insert([
+                'idwalas' => $walas->idwalas,
+                'idsiswa' => $siswa->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
     }
 }

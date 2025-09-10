@@ -13,12 +13,13 @@ class siswa extends Model
         return $this->belongsTo(admin::class, 'id', 'id');
     }
     protected $table = 'datasiswa';
-    protected $primaryKey = 'idsiswa';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id',
         'nama',
         'tb',
-        'bb'
+        'bb',
+        'username',
+        'password'
     ];
 }

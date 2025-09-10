@@ -16,7 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('idwalas');
             $table->foreign('idwalas')->references('idwalas')->on('datawalas')->onDelete('cascade');
             $table->unsignedBigInteger('idsiswa');
-            $table->foreign('idsiswa')->references('idsiswa')->on('datasiswa')->onDelete('cascade');
+            $table->foreign('idsiswa')->references('id')->on('datasiswa')->onDelete('cascade');
             $table->timestamps();
         });
     }

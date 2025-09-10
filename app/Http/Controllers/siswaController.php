@@ -7,6 +7,8 @@ use App\Models\siswa; // pastikan ini sesuai nama model
 use App\Models\guru;
 use App\Models\kelas;
 use App\Models\walas;
+use Illuminate\Support\Facades\Hash;
+use App\Models\Admin; // pastikan ini sesuai dengan namespace model Admin
 
 class SiswaController extends Controller
 {
@@ -15,52 +17,47 @@ class SiswaController extends Controller
         if (!session()->has('admin_id')) {
             return redirect()->route('login');
         }
-    
-        // Daftar semua siswa (untuk tabel)
-        $listSiswa = siswa::all();
-    
-        // Daftar semua guru (misalnya untuk admin yang lihat data guru)
-        $listGuru = guru::all();
-    
-        // Profil sesuai role login
-        $profilSiswa = null;
+
+        $role = session('admin_role');
+        $username = session('admin_username');
         $profilGuru = null;
-        $walasInfo = null;
-        $kelasInfo = null;
-    
-        if (session('admin_role') === 'siswa') {
-            $profilSiswa = siswa::where('idsiswa', session('admin_id'))->first();
-                        // Cari kelas siswa berdasarkan idsiswa
-            if ($profilSiswa) {
-                $kelas = Kelas::with('walas')->where('idsiswa', $profilSiswa->idsiswa)->first();
-                if ($kelas) {
-                    $kelasInfo = $kelas;
-                    // Cari info wali kelas
-                    if ($kelas->walas) {
-                        $walasInfo = guru::where('idguru', $kelas->walas->idguru)->first();
-                    }
-                }
+        $profilSiswa = null;
+        $listSiswa = null;
+        $listGuru = null;
+
+        if ($role === 'guru') {
+            // cari akun admin/guru berdasarkan username
+            $admin = Admin::where('username', $username)->first();
+
+            if ($admin) {
+                // ambil guru yang FK id = id admin
+                $profilGuru = Guru::where('id', $admin->id)->first();
             }
+        } elseif ($role === 'siswa') {
+            // cari akun admin siswa berdasarkan username
+            $admin = Admin::where('username', $username)->first();
+
+            if ($admin) {
+                // kalau tabel datasiswa punya kolom username
+                $profilSiswa = Siswa::where('username', $username)->first();
+
+                // kalau tabel datasiswa FK ke id admin, ganti dengan ini:
+                // $profilSiswa = Siswa::where('id', $admin->id)->first();
+            }
+        } elseif ($role === 'admin') {
+            $listSiswa = Siswa::all();
+            $listGuru  = Guru::all();
         }
-    
-        if (session('admin_role') === 'guru') {
-            $profilGuru = guru::where('idguru', session('admin_id'))->first();
+
+        return view('home', [
+            'profilGuru'  => $profilGuru,
+            'profilSiswa' => $profilSiswa,
+            'listSiswa'   => $listSiswa,
+            'listGuru'    => $listGuru,
+        ]);
+    }
 
 
-                        // Cari kelas yang diajar guru (jika guru adalah wali kelas)
-            if ($profilGuru) {
-                $walasGuru = Walas::where('idguru', $profilGuru->idguru)->first();
-                if ($walasGuru) {
-                    // Ambil semua siswa di kelas yang diajar guru ini
-                    $siswaDiKelas = Kelas::with('siswa')->where('idwalas', $walasGuru->idwalas)->get();
-                    $kelasInfo = $walasGuru;
-                    $walasInfo = $siswaDiKelas;
-                }
-            }
-        }
-    
-        return view('home', compact('listSiswa', 'listGuru', 'profilSiswa', 'profilGuru', 'walasInfo', 'kelasInfo'));
-    } 
 
     public function create()
     {
@@ -69,13 +66,19 @@ class SiswaController extends Controller
 
     public function store(Request $request)
     {
-        Siswa::create([
-            'nama' => $request->nama,
-            'tb' => $request->tb,
-            'bb' => $request->bb,
-            'id' => session('admin_id') // Foreign key ke dataadmin
+        $validated = $request->validate([
+            'nama' => 'required',
+            'tb' => 'required|numeric',
+            'bb' => 'required|numeric',
+            'username' => 'required|unique:datasiswa,username', // ganti di sini
+            'password' => 'required|min:6',
         ]);
-        return redirect()->route('home');
+
+        $validated['password'] = Hash::make($validated['password']);
+
+        Siswa::create($validated);
+
+        return redirect()->route('home')->with('success', 'Siswa berhasil ditambahkan!');
     }
 
     public function edit($id)
