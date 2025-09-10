@@ -69,7 +69,12 @@ class SiswaController extends Controller
 
     public function store(Request $request)
     {
-        Siswa::create($request->only('nama', 'tb', 'bb'));
+        Siswa::create([
+            'nama' => $request->nama,
+            'tb' => $request->tb,
+            'bb' => $request->bb,
+            'id' => session('admin_id') // Foreign key ke dataadmin
+        ]);
         return redirect()->route('home');
     }
 

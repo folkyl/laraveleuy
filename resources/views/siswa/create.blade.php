@@ -13,6 +13,7 @@
         <input type="number" name="tb" placeholder="Tinggi Badan (cm)" required><br>
         <input type="number" name="bb" placeholder="Berat Badan (kg)" required><br>
         <button type="submit">Simpan</button>
+        <a href="{{ route('home') }}">Batal</a>
     </form>
 </body>
 
